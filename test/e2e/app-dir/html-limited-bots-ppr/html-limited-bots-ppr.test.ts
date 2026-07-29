@@ -83,27 +83,29 @@ import cheerio from 'cheerio'
     }
   })
 
-  // A custom htmlLimitedBots pattern currently replaces the built-in pattern
-  // in the deployment manifest, so only assert built-in classifications in
-  // start mode until the deployment proxy receives the union of both.
-  if (!isNextDeploy) {
-    it.each(['Discordbot', 'Googlebot'])(
-      'should preserve fully buffered rendering for the built-in %s classification',
-      async (userAgent) => {
-        const res = await next.fetch('/partial?stream=delay', {
-          headers: {
-            'user-agent': userAgent,
-          },
-        })
+  async function expectFullyBufferedRender(userAgent: string) {
+    const res = await next.fetch('/partial?stream=delay', {
+      headers: {
+        'user-agent': userAgent,
+      },
+    })
 
-        expect(res.status).toBe(200)
-        expect(res.headers.get('x-nextjs-postponed')).toBeNull()
+    expect(res.status).toBe(200)
+    if (!isNextDeploy) {
+      expect(res.headers.get('x-nextjs-postponed')).toBeNull()
+    }
 
-        const $ = cheerio.load(await res.text())
-        expect($('head title').text()).toBe('dynamic title')
-        expect($('#dynamic-content').text()).toBe('dynamic content')
-        expect($('#dynamic-fallback').length).toBe(0)
-      }
-    )
+    const $ = cheerio.load(await res.text())
+    expect($('head title').text()).toBe('dynamic title')
+    expect($('#dynamic-content').text()).toBe('dynamic content')
+    expect($('#dynamic-fallback').length).toBe(0)
   }
+
+  it('should preserve fully buffered rendering for a built-in HTML-limited bot', async () => {
+    await expectFullyBufferedRender('Discordbot')
+  })
+
+  it('should preserve fully buffered rendering for a built-in DOM-capable bot', async () => {
+    await expectFullyBufferedRender('Googlebot')
+  })
 })

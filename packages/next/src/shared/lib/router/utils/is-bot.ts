@@ -7,6 +7,7 @@ import { HTML_LIMITED_BOT_UA_RE } from './html-bots'
 const HEADLESS_BROWSER_BOT_UA_RE = /Googlebot(?!-)|Googlebot$/i
 
 export const HTML_LIMITED_BOT_UA_RE_STRING = HTML_LIMITED_BOT_UA_RE.source
+export const BOT_UA_RE_STRING = `${HTML_LIMITED_BOT_UA_RE_STRING}|${HEADLESS_BROWSER_BOT_UA_RE.source}`
 
 export { HTML_LIMITED_BOT_UA_RE }
 

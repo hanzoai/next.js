@@ -14,6 +14,11 @@ describe('app-dir - metadata-streaming-config-customized', () => {
   })
 
   it('should have the customized streaming metadata config output in routes-manifest.json', async () => {
+    const requiredServerFiles = JSON.parse(
+      await next.readFile('.next/required-server-files.json')
+    )
+    expect(requiredServerFiles.config.htmlLimitedBots).toBe('MyBot')
+
     const prerenderManifest = JSON.parse(
       await next.readFile('.next/prerender-manifest.json')
     )
@@ -32,22 +37,22 @@ describe('app-dir - metadata-streaming-config-customized', () => {
        "/": {
          "key": "user-agent",
          "type": "header",
-         "value": "MyBot",
+         "value": "[\\w-]+-Google|Google-[\\w-]+|Chrome-Lighthouse|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti|googleweblight|Googlebot(?!-)|Googlebot$|MyBot",
        },
        "/_global-error": {
          "key": "user-agent",
          "type": "header",
-         "value": "MyBot",
+         "value": "[\\w-]+-Google|Google-[\\w-]+|Chrome-Lighthouse|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti|googleweblight|Googlebot(?!-)|Googlebot$|MyBot",
        },
        "/_not-found": {
          "key": "user-agent",
          "type": "header",
-         "value": "MyBot",
+         "value": "[\\w-]+-Google|Google-[\\w-]+|Chrome-Lighthouse|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti|googleweblight|Googlebot(?!-)|Googlebot$|MyBot",
        },
        "/ppr": {
          "key": "user-agent",
          "type": "header",
-         "value": "MyBot",
+         "value": "[\\w-]+-Google|Google-[\\w-]+|Chrome-Lighthouse|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview|Yeti|googleweblight|Googlebot(?!-)|Googlebot$|MyBot",
        },
      }
     `)

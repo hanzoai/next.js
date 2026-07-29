@@ -199,7 +199,10 @@ import {
 import { FallbackMode, fallbackModeToFallbackField } from '../lib/fallback'
 import { RenderingMode } from './rendering-mode'
 import { InvariantError } from '../shared/lib/invariant-error'
-import { HTML_LIMITED_BOT_UA_RE_STRING } from '../shared/lib/router/utils/is-bot'
+import {
+  BOT_UA_RE_STRING,
+  HTML_LIMITED_BOT_UA_RE_STRING,
+} from '../shared/lib/router/utils/is-bot'
 import type { UseCacheTrackerKey } from './webpack/plugins/telemetry-plugin/use-cache-tracker-utils'
 
 import { turbopackBuild } from './turbopack-build'
@@ -3312,9 +3315,15 @@ export default async function build(
                 ? true
                 : undefined
 
-            const htmlBotsRegexString =
-              // The htmlLimitedBots has been converted to a string during loadConfig
-              config.htmlLimitedBots || HTML_LIMITED_BOT_UA_RE_STRING
+            // htmlLimitedBots has been converted to a string during loadConfig.
+            // Custom patterns extend the built-in list because the runtime
+            // classifies both DOM-capable and HTML-limited bots independently
+            // of this configuration.
+            const botsRegexString =
+              !config.htmlLimitedBots ||
+              config.htmlLimitedBots === HTML_LIMITED_BOT_UA_RE_STRING
+                ? BOT_UA_RE_STRING
+                : `${BOT_UA_RE_STRING}|${config.htmlLimitedBots}`
 
             // this flag is used to selectively bypass the static cache and invoke the lambda directly
             // to enable server actions on static routes
@@ -3332,7 +3341,7 @@ export default async function build(
                     {
                       type: 'header' as const,
                       key: 'user-agent',
-                      value: htmlBotsRegexString,
+                      value: botsRegexString,
                     },
                   ]
                 : []),
