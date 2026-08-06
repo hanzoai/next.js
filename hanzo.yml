@@ -1,0 +1,14 @@
+# Next.js. npm packages, no image.
+#
+# The gate is the project's own `pnpm build` — turbo across every workspace
+# package (next, next-swc bindings' JS side, font, eslint-plugin, the codemods
+# and the create-next-app CLI). It compiles and bundles the whole tree, so a
+# type error or a broken build script in any package fails it.
+#
+# Not the jest suites: `test-dev` / `test-start` / `test-prod` each boot real
+# browsers against a built app and upstream runs them as a large sharded matrix.
+# One runner cannot hold that, and a fraction of it declared as the gate would
+# report less than it appears to.
+test:
+  - name: build
+    run: pnpm install --frozen-lockfile && pnpm build
